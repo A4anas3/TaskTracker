@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.5.4</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.corperate</groupId>
+	<artifactId>TaskTracker</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>TaskTracker</name>
+	<description>Description: A monolithic Corporate Task Management System where an Admin can create and assign tasks to employees. Each Employee can view assigned tasks, update their progress, and mark them as completed. The system keeps track of task creation time, last updated time, and assignment details.  Features include:  User management (Admin, Employee) with role-based access.  Admin assigns tasks to employees.  Employees can update task status (PENDING, IN_PROGRESS, COMPLETED).  Automatic timestamps (createdAt, updatedAt).  Each task is linked to a specific employee (assignedTo).  Extensible for login &amp; registration with authentication (can be added later).  Technology Stack:  Spring Boot (Monolithic)  Spring Web (REST API)  Spring Data JPA (Database ORM)  H2 / MySQL (for persistence)  Spring Security (for login/registration in future)  So in Spring Initializr, you can fill like this:  Name: task-tracker  Description: Corporate Task Management System with role-based task assignment and tracking.  Dependencies (initially):  Spring Web  Spring Data JPA  H2 Database (or MySQL if you want external DB)  Lombok (optional, reduces boilerplate code)  👉 Later, you can add Spring Security when you implement login &amp; registration.  ⚡ Strategy:  Start with User and Task entities + CRUD APIs.  Implement Admin assigning tasks + Employee updating status.  Add timestamps (createdAt, updatedAt).  Later, integrate authentication (login/registration).</description>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>21</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
