@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -26,8 +27,9 @@ public class Taskhistory {
 
     @Enumerated(EnumType.STRING)
     private ActionType action;
-
-    private LocalDateTime actionTime = LocalDateTime.now();
+    @Column(nullable = false,updatable = false)
+    @CreationTimestamp
+    private LocalDateTime actionTime;
 
     @Column(length = 2000)
     private String remarks;

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -21,7 +22,7 @@ public class tasks {
     generator = "task_seq")
     private long id;
     private LocalDate givenDate=LocalDate.now();
-     @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
    private Status status=Status.PENDING;
     private LocalDate lastDate;
     private String description;
@@ -31,6 +32,7 @@ public class tasks {
     @ManyToOne
     @JoinColumn(name = "createdby",nullable = false)
     private User CreatedBy;
+
 
 
 }

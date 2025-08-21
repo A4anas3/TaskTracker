@@ -1,4 +1,4 @@
-package com.corperate.TaskTracker.Repository;
+package com.corperate.TaskTracker.Repository.AdminRepoOfALL;
 
 import com.corperate.TaskTracker.Model.Role;
 import com.corperate.TaskTracker.Model.User;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 
-public interface AdminRepo extends JpaRepository<User,Integer> {
+public interface UserRepo extends JpaRepository<User,Integer> {
     boolean existsByEmail(String email);
 
     boolean existsByMobileNo(String mobileNo);
