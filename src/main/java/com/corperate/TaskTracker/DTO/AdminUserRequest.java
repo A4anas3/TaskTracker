@@ -10,6 +10,7 @@ public class AdminUserRequest {
     private String email;
     private String mobileNo;
     private String role;
+    private String password;
 
 
 

@@ -20,12 +20,12 @@ import java.util.List;
 @AllArgsConstructor
 @Transactional
 public class TaskService {
-    @Autowired
+
     private final TaskhistoryRepo taskhistoryRepo;
-    @Autowired
+
     private final UserRepo repo;
     @Autowired
-    private final TaskRepo taskRepo;
+    private TaskRepo taskRepo;
     public String createTask(TaskDtoPost dto) {
 
 

@@ -13,6 +13,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -31,6 +32,8 @@ public class UserService {
     private final UserRepo repo;
     @Autowired
     private final TaskRepo adminRepo;
+    @Autowired
+    private final PasswordEncoder encoder;
 
 
     public String createUser(AdminUserRequest request, MultipartFile image) throws IOException {
@@ -56,6 +59,7 @@ public class UserService {
         }
         user.setRole(Role.valueOf(request.getRole().toUpperCase()));
         user.setProfilePicture(image.getBytes());
+        user.setPassword(encoder.encode(request.getPassword()));
 
         repo.save(user);
 

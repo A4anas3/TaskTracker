@@ -15,4 +15,6 @@ public interface UserRepo extends JpaRepository<User,Integer> {
     boolean existsByMobileNo(String mobileNo);
 
     List<User> findByRole(Role role);
+
+    User findByEmail(String email);
 }

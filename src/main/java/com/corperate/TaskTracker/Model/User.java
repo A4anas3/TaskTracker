@@ -25,6 +25,12 @@ public class User {
     @Lob
 
     private byte[] profilePicture;
+@Column(nullable = false)
+    private String password;
+    private boolean enabled = true;         // default true
+    private boolean accountNonLocked = true;
+    private boolean accountNonExpired = true;
+    private boolean credentialsNonExpired = true;
 
 
 
