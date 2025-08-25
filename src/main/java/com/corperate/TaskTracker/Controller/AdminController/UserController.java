@@ -25,7 +25,6 @@ public class UserController {
 
 
     @PostMapping(value="/create-user",consumes = "multipart/form-data")
-//@PostMapping(value="/create-user")
     public ResponseEntity<String> createUser(@RequestPart("request") AdminUserRequest request,@RequestPart(name = "image",required = false) MultipartFile image){
         String output= null;
         try {

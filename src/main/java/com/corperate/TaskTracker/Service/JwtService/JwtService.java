@@ -1,6 +1,7 @@
 package com.corperate.TaskTracker.Service.JwtService;
 
 import com.corperate.TaskTracker.DTO.JwtDto.JwtDto;
+import com.corperate.TaskTracker.Model.Role;
 import com.corperate.TaskTracker.Model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -41,7 +42,7 @@ public class JwtService {
     }
     public String generateToken(JwtDto user) {
         Instant now = Instant.now();
-        Instant expiry = now.plus(3, ChronoUnit.HOURS);
+        Instant expiry = now.plus(3, ChronoUnit.MINUTES);
         Map<String, Object> claims = new HashMap<>();
          claims.put("id",user.getId());
         claims.put("role",user.getRole().name());
@@ -57,6 +58,10 @@ public class JwtService {
     private Key getKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+    public Role ectractRole(String token){
+        String s=extractClaim(token,c->c.get("role",String.class));
+         return Role.valueOf(s);
     }
 
     public String extractUsername(String token) {
