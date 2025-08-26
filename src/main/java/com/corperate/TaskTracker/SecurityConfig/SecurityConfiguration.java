@@ -50,8 +50,10 @@ public PasswordEncoder passwordEncoder(){
         http
                 .csrf(Customizer->Customizer.disable())
                 .authorizeHttpRequests(request->request.
-                        requestMatchers("/api/admin/create-user","/login")
+                        requestMatchers("/login")
                         .permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/TaskManagement").hasAnyRole("ADMIN","MANAGER")
                         .anyRequest()
                         .authenticated())
                 .httpBasic(Customizer.withDefaults())

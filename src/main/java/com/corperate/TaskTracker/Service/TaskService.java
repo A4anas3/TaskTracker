@@ -26,91 +26,91 @@ public class TaskService {
     private final UserRepo repo;
     @Autowired
     private TaskRepo taskRepo;
+
     public String createTask(TaskDtoPost dto) {
 
 
-        User createdBy=repo.findById(dto.getCreatedById()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"no created id found in db!Please register yourself first"+dto.getCreatedById()));
-        User AssignedTo=repo.findById(dto.getAssignedToId()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"no created id found in db!Please register yourself first"+dto.getAssignedToId()));
-        if(AssignedTo.getRole()== Role.ADMIN){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Only Employees and Manager assign task");
+        User createdBy = repo.findById(dto.getCreatedById()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "no created id found in db!Please register yourself first" + dto.getCreatedById()));
+        User AssignedTo = repo.findById(dto.getAssignedToId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "no created id found in db!Please register yourself first" + dto.getAssignedToId()));
+        if (AssignedTo.getRole() == Role.ADMIN) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only Employees and Manager assign task");
         }
 
 
-        tasks task=new tasks();
-        if(createdBy.getRole()==Role.ADMIN || createdBy.getRole()==Role.MANAGER){
+        tasks task = new tasks();
+        if (createdBy.getRole() == Role.ADMIN || createdBy.getRole() == Role.MANAGER) {
             task.setCreatedBy(createdBy);
-        }else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"only Admin and Manager can assign Task");
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "only Admin and Manager can assign Task");
         }
 
         task.setAssignedTo(AssignedTo);
-        task.setStatus(dto.getStatus()!=null?dto.getStatus(): Status.PENDING);
+        task.setStatus(dto.getStatus() != null ? dto.getStatus() : Status.PENDING);
         task.setLastDate(dto.getLastDate());
         task.setDescription(dto.getDescription());
 
         taskRepo.save(task);
-        saveHistory(task,createdBy, ActionType.ASSIGNED,"Task Assigned");
-        return ("Successfully Assign task to "+AssignedTo.getFirstname());
+        saveHistory(task, createdBy, ActionType.ASSIGNED, "Task Assigned");
+        return ("Successfully Assign task to " + AssignedTo.getFirstname());
 
     }
 
 
     public String updateTask(Long id, TaskDtoPost dto) {
-        tasks exist= taskRepo.findById(id).orElseThrow(
-                ()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Person with "+id+"NotFound")
+        tasks exist = taskRepo.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Person with " + id + "NotFound")
         );
 
-        if(dto.getStatus()!=null){
+        if (dto.getStatus() != null) {
             exist.setStatus(dto.getStatus());
         }
-        if(dto.getDescription()!=null){
+        if (dto.getDescription() != null) {
             exist.setDescription(dto.getDescription());
 
         }
-        if(dto.getLastDate()!=null){
+        if (dto.getLastDate() != null) {
             exist.setLastDate(dto.getLastDate());
 
         }
-        if(dto.getAssignedToId()!=null){
-            User createdBy=repo.findById(dto.getCreatedById()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"no created id found in db!Please register yourself first"+dto.getCreatedById()));
+        if (dto.getAssignedToId() != null) {
+            User createdBy = repo.findById(dto.getCreatedById()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "no created id found in db!Please register yourself first" + dto.getCreatedById()));
             exist.setCreatedBy(createdBy);
 
 
         }
-        if(dto.getCreatedById()!=null){
-            User AssignedTo=repo.findById(dto.getAssignedToId()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"no created id found in db!Please register yourself first"+dto.getAssignedToId()));
+        if (dto.getCreatedById() != null) {
+            User AssignedTo = repo.findById(dto.getAssignedToId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "no created id found in db!Please register yourself first" + dto.getAssignedToId()));
             exist.setAssignedTo(AssignedTo);
         }
-        User createdBy=repo.findById(dto.getCreatedById()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"no created id found in db!Please register yourself first"+dto.getCreatedById()));
+        User createdBy = repo.findById(dto.getCreatedById()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "no created id found in db!Please register yourself first" + dto.getCreatedById()));
         taskRepo.save(exist);
-        saveHistory(exist,createdBy,ActionType.REASSIGNED,"Succesfully Update ");
+        saveHistory(exist, createdBy, ActionType.REASSIGNED, "Succesfully Update ");
         return ("Task Detail Updated");
-
 
 
     }
 
     public String deleteTask(Long id) throws IOException {
-        if(!taskRepo.existsById(id)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"task with "+id+"not found");
+        if (!taskRepo.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "task with " + id + "not found");
 
         }
         taskRepo.deleteById(id);
 
-        return ("Succesfully deleted the task with id "+id);
+        return ("Succesfully deleted the task with id " + id);
     }
 
-    public List<TaskDTOGet> GetAllTask() throws IOException{
-        List<tasks>t=taskRepo.findAll();
+    public List<TaskDTOGet> GetAllTask() throws IOException {
+        List<tasks> t = taskRepo.findAll();
         return t.stream()
-                .map((a)->new TaskDTOGet(
+                .map((a) -> new TaskDTOGet(
                         a.getId(),
                         a.getGivenDate(),
                         a.getDescription(),  // description comes 3rd
                         a.getLastDate(),     // lastDate comes 4th
                         a.getStatus(),
-                        a.getAssignedTo()!=null?a.getAssignedTo().getId():null,
-                        a.getCreatedBy()!=null?a.getCreatedBy().getId():null
+                        a.getAssignedTo() != null ? a.getAssignedTo().getId() : null,
+                        a.getCreatedBy() != null ? a.getCreatedBy().getId() : null
                 )).toList();
 
 
@@ -128,14 +128,14 @@ public class TaskService {
         a.setGivenDate(t.getGivenDate());
         a.setLastDate(t.getLastDate());
 
-        a.setAssignedToId(t.getAssignedTo()!=null?t.getAssignedTo().getId():null);
-        a.setCreatedById(t.getCreatedBy()!=null?t.getCreatedBy().getId():null);
+        a.setAssignedToId(t.getAssignedTo() != null ? t.getAssignedTo().getId() : null);
+        a.setCreatedById(t.getCreatedBy() != null ? t.getCreatedBy().getId() : null);
 
         return a;
 
     }
 
-    public void saveHistory(tasks taskId, User actionBy, ActionType actionType,String remarks){
+    public void saveHistory(tasks taskId, User actionBy, ActionType actionType, String remarks) {
         Taskhistory task = new Taskhistory();
         task.setTask(taskId);
         task.setActionBy(actionBy);
@@ -149,14 +149,14 @@ public class TaskService {
 
 
     public List<AdminHistorySave> History() {
-        List<Taskhistory> task= taskhistoryRepo.findAll();
+        List<Taskhistory> task = taskhistoryRepo.findAll();
 
         return task.stream()
-                .map(e->new AdminHistorySave(
+                .map(e -> new AdminHistorySave(
                         e.getId(),
                         e.getTask().getId(),
                         e.getActionBy().getId(),
-                        e.getActionBy()!=null?e.getActionBy().getFirstname():null,
+                        e.getActionBy() != null ? e.getActionBy().getFirstname() : null,
                         e.getAction(),
                         e.getActionTime(),
                         e.getRemarks()
@@ -167,17 +167,17 @@ public class TaskService {
 
     public List<AdminHistorySave> TaskHistoryById(Long taskId) {
         List<Taskhistory> task = taskhistoryRepo.findByTaskId(taskId);
-        if(task==null){
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND,"Task with id" + taskId +"Not Found");
+        if (task == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task with id" + taskId + "Not Found");
 
 
         }
         return task.stream()
-                .map(e->new AdminHistorySave(
+                .map(e -> new AdminHistorySave(
                         e.getId(),
                         e.getTask().getId(),
                         e.getActionBy().getId(),
-                        e.getActionBy()!=null?e.getActionBy().getFirstname():null,
+                        e.getActionBy() != null ? e.getActionBy().getFirstname() : null,
                         e.getAction(),
                         e.getActionTime(),
                         e.getRemarks()
@@ -185,4 +185,62 @@ public class TaskService {
                 )).toList();
 
     }
+
+    public List<TaskDTOGet> getMyTask(Integer s) {
+        List<tasks> temp = taskRepo.findByAssignedTo_Id(s);
+        return temp.stream()
+                .map((e) -> new TaskDTOGet(
+                        e.getId(),
+                        e.getGivenDate(),
+                        e.getDescription(),
+                        e.getLastDate(),
+
+                        e.getStatus(),
+                        e.getAssignedTo() == null ? e.getAssignedTo().getId() : null,
+                        e.getCreatedBy().getId()
+                )).toList();
+    }
+
+    public List<TaskDTOGet> AssignedByMe(Integer s) {
+        List<tasks> a = taskRepo.findByCreatedBy_Id(s);
+        return a.stream()
+                .map((e) -> new TaskDTOGet(
+                        e.getId(),
+                        e.getGivenDate(),
+                        e.getDescription(),
+                        e.getLastDate(),
+                        e.getStatus(),
+                        e.getAssignedTo() == null ? e.getAssignedTo().getId() : null,
+                        e.getCreatedBy() == null ? e.getCreatedBy().getId() : null
+                )).toList();
+    }
+
+    public TaskDTOGet UpdateStatus(long taskId, String status, int id) {
+        tasks t = taskRepo.findById(taskId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "task not exist"));
+        if (t.getAssignedTo() == null || t.getAssignedTo().getId() != id) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not allowed ");
+        }
+        try {
+            t.setStatus(Status.valueOf(status.toUpperCase()));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status: " + status);
+        }
+        taskRepo.save(t);
+        User actionBy = repo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        saveHistory(t, actionBy, ActionType.UPDATED, "Status changed to " + status);
+
+        TaskDTOGet taskDTOGet = new TaskDTOGet(
+                t.getId(),
+                t.getGivenDate(),
+                t.getDescription(),
+                t.getLastDate(),
+                t.getStatus(),
+                t.getAssignedTo() != null ? t.getAssignedTo().getId() : null,
+                t.getCreatedBy() != null ? t.getCreatedBy().getId() : null
+        );
+        return taskDTOGet;
+    }
 }
+
+
