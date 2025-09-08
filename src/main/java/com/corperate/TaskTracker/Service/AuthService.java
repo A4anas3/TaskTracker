@@ -39,7 +39,7 @@ public class AuthService {
 
 
         } else {
-            return "Login Failed";
+            throw new RuntimeException("Invalid credentials");
         }
 
     }

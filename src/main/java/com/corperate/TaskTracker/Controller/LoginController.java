@@ -5,6 +5,8 @@ import com.corperate.TaskTracker.DTO.LoginAuthDTO.LoginDto;
 
 import com.corperate.TaskTracker.Service.AuthService;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,9 +19,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
     private final AuthService authService;
     @PostMapping("/login")
-    public String login(@RequestBody LoginDto loginDto) {
-        return authService.login(loginDto);
+    public String login(@RequestBody LoginDto loginDto, HttpServletResponse response) {
+        String token = authService.login(loginDto);
+
+        Cookie jwtCookie = new Cookie("jwt", token);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setSecure(false); // Set to false for localhost; true in production
+        jwtCookie.setPath("/");
+        jwtCookie.setMaxAge(24 * 60 * 60); // 1 day expiry
+
+        response.addCookie(jwtCookie);
+
+        return "Login successful"; // Only message, JWT not printed
     }
+
 
 
 
