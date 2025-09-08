@@ -31,7 +31,7 @@ public class tasks {
     private User assignedTo;
     @ManyToOne
     @JoinColumn(name = "createdby",nullable = false)
-    private User CreatedBy;
+    private User createdBy;
 
 
 
