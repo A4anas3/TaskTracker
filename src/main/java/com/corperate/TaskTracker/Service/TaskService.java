@@ -4,6 +4,7 @@ import com.corperate.TaskTracker.DTO.AdminManagerHistoryDto.AdminHistorySave;
 import com.corperate.TaskTracker.DTO.AdminTaskManagement.TaskDTOGet;
 import com.corperate.TaskTracker.DTO.AdminTaskManagement.TaskDtoPost;
 import com.corperate.TaskTracker.Model.*;
+import com.corperate.TaskTracker.Model.Principal.UserDetailPrincipal;
 import com.corperate.TaskTracker.Repository.AdminRepoOfALL.UserRepo;
 import com.corperate.TaskTracker.Repository.HistryTrack.TaskhistoryRepo;
 import com.corperate.TaskTracker.Repository.TaskRepo;
@@ -16,6 +17,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.List;
+
+import static com.corperate.TaskTracker.Model.ActionType.IN_PROGRESS;
+import static com.corperate.TaskTracker.Model.Status.COMPLETED;
+
 @Service
 @AllArgsConstructor
 @Transactional
@@ -90,14 +95,21 @@ public class TaskService {
 
     }
 
-    public String deleteTask(Long id) throws IOException {
-        if (!taskRepo.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "task with " + id + "not found");
+    public String deleteTask(Long id, UserDetailPrincipal principal) throws IOException {
+        // 1. Find the task before deleting it
+        tasks taskToDelete = taskRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task with id " + id + " not found"));
 
-        }
+        // 2. Get the user who is performing the action
+        User actionBy = principal.getUser();
+
+        // 3. Save the history record BEFORE deleting the task
+        saveHistory(taskToDelete, actionBy, ActionType.DELETED, "Task has been deleted");
+
+        // 4. Now, delete the task
         taskRepo.deleteById(id);
 
-        return ("Succesfully deleted the task with id " + id);
+        return "Successfully deleted the task with id " + id;
     }
 
     public List<TaskDTOGet> GetAllTask() throws IOException {
@@ -220,12 +232,27 @@ public class TaskService {
         if (t.getAssignedTo() == null || t.getAssignedTo().getId() != id) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not allowed ");
         }
+        Status newStatus;
         try {
-            t.setStatus(Status.valueOf(status.toUpperCase()));
+            newStatus= Status.valueOf(status.toUpperCase());
+            t.setStatus(newStatus);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status: " + status);
         }
         taskRepo.save(t);
+
+        ActionType actionType;
+        switch (newStatus) {
+            case IN_PROGRESS:
+                actionType = IN_PROGRESS;
+                break;
+            case COMPLETED:
+                actionType = ActionType.COMPLETED;
+                break;
+            default:
+                actionType = ActionType.UPDATED;
+                break;
+        }
         User actionBy = repo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         saveHistory(t, actionBy, ActionType.UPDATED, "Status changed to " + status);

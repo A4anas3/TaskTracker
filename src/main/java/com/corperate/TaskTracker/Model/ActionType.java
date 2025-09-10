@@ -6,6 +6,7 @@ public enum ActionType{
     COMPLETED,
     REASSIGNED,
     DEADLINE_EXTENDED,
-    WORK_LOGGED,
-    UPDATED
+
+    UPDATED,
+    DELETED
 }

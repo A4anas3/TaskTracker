@@ -45,10 +45,10 @@ public class TaskController {
     }
 
     @DeleteMapping("deleteTask/{id}")
-    public ResponseEntity<String> deleteTask(@PathVariable Long id){
+    public ResponseEntity<String> deleteTask(@PathVariable Long id,@AuthenticationPrincipal UserDetailPrincipal principal){
         String s= null;
         try {
-            s = taskService.deleteTask(id);
+            s = taskService.deleteTask(id,principal);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

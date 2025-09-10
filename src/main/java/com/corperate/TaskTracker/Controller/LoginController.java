@@ -26,7 +26,7 @@ public class LoginController {
         jwtCookie.setHttpOnly(true);
         jwtCookie.setSecure(false); // Set to false for localhost; true in production
         jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(24 * 60 * 60); // 1 day expiry
+        jwtCookie.setMaxAge(3* 60); // 1 day expiry
 
         response.addCookie(jwtCookie);
 
