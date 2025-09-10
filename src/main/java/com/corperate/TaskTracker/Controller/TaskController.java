@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.util.List;
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173/")
 @RequestMapping("/TaskManagement")
+@CrossOrigin(origins = "http://localhost:5173")
 public class TaskController {
     @Autowired
     private final TaskService taskService;
@@ -36,7 +36,7 @@ public class TaskController {
         return ResponseEntity.ok(s);
 
     }
-
+//
     @PutMapping("updateTask/{id}")
     public ResponseEntity<String> updateTask(@PathVariable Long id, @RequestBody TaskDtoPost dto  ){
         String s= taskService.updateTask(id,dto);

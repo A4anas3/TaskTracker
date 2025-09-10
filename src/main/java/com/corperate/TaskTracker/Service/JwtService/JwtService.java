@@ -42,7 +42,7 @@ public class JwtService {
     }
     public String generateToken(JwtDto user) {
         Instant now = Instant.now();
-        Instant expiry = now.plus(3, ChronoUnit.MINUTES);
+        Instant expiry = now.plus(30, ChronoUnit.MINUTES);
         Map<String, Object> claims = new HashMap<>();
          claims.put("id",user.getId());
         claims.put("role",user.getRole().name());

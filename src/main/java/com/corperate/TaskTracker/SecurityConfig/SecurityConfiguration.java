@@ -59,7 +59,7 @@ public PasswordEncoder passwordEncoder(){
                         .requestMatchers("/TaskManagement").hasAnyRole("ADMIN","MANAGER")
                         .anyRequest()
                         .authenticated())
-                .httpBasic(Customizer.withDefaults())
+//                .httpBasic(Customizer.withDefaults())
 //                .formLogin(Customizer.withDefaults())
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

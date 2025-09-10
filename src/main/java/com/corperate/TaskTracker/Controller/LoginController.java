@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173/")
+@CrossOrigin(origins = "http://localhost:5173")
 public class LoginController {
     private final AuthService authService;
 
@@ -26,7 +26,7 @@ public class LoginController {
         jwtCookie.setHttpOnly(true);
         jwtCookie.setSecure(false); // Set to false for localhost; true in production
         jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(3 * 60); // 3 minutes expiry
+        jwtCookie.setMaxAge(30 * 60*1000); // 3 minutes expiry
 
         response.addCookie(jwtCookie);
 
